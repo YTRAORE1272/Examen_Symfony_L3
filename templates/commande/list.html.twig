@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Commandes{% endblock %}
+
+{% block body %}
+    <h1>📋 Liste des Commandes</h1>
+
+    {% if commandes is empty %}
+        <p style="padding: 20px; background: #fff3cd; border-radius: 5px; color: #856404;">
+            Aucune commande pour le moment. <a href="{{ path('commande_new') }}">Créer une commande</a>
+        </p>
+    {% else %}
+        <table>
+            <thead>
+                <tr>
+                    <th>N° Commande</th>
+                    <th>Date</th>
+                    <th>Nombre d'achats</th>
+                    <th>Montant Total</th>
+                    <th>Détails</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commande in commandes %}
+                    <tr>
+                        <td>#{{ commande.id }}</td>
+                        <td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
+                        <td>{{ commande.achats|length }}</td>
+                        <td><strong>{{ commande.montantTotal }} FCFA</strong></td>
+                        <td>
+                            <details>
+                                <summary style="cursor: pointer; color: #007bff;">Voir les achats</summary>
+                                <ul style="margin-top: 10px; padding-left: 20px;">
+                                    {% for achat in commande.achats %}
+                                        <li>
+                                            {{ achat.produit.nom }} 
+                                            ({{ achat.produit.categorie.nom }}) 
+                                            - Quantité: {{ achat.quantite }} 
+                                            - Prix unitaire: {{ achat.produit.prix }} FCFA
+                                            - Sous-total: {{ (achat.produit.prix * achat.quantite)|number_format(2, '.', '') }} FCFA
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </details>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endblock %}

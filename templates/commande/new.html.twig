@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Commande{% endblock %}
+
+{% block body %}
+    <h1>🛒 Créer une Nouvelle Commande</h1>
+
+    {{ form_start(form) }}
+        <div id="achats-container" data-index="{{ form.achats|length }}" data-prototype="{{ form_widget(form.achats.vars.prototype)|e('html_attr') }}">
+            {% for achat in form.achats %}
+                <div class="produit-row">
+                    {{ form_row(achat.produit) }}
+                    {{ form_row(achat.quantite) }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="add-achat" class="btn" style="background: #28a745; margin: 10px 0;">
+            + Ajouter un produit
+        </button>
+
+        <div style="margin-top: 20px;">
+            {{ form_row(form.submit, {'attr': {'class': 'btn'}}) }}
+        </div>
+    {{ form_end(form) }}
+
+    <script>
+        const container = document.getElementById('achats-container');
+        const addButton = document.getElementById('add-achat');
+        let index = parseInt(container.dataset.index);
+
+        addButton.addEventListener('click', function() {
+            const prototype = container.dataset.prototype;
+            const newForm = prototype.replace(/__name__/g, index);
+            const div = document.createElement('div');
+            div.className = 'produit-row';
+            div.innerHTML = newForm;
+            container.appendChild(div);
+            index++;
+        });
+    </script>
+{% endblock %}
